@@ -3,8 +3,11 @@ import random
 
 
 class Node:
-    def __init__(self, name, edges):
-        self.name, self.edges, self.weight = name, edges, 1
+    """
+    Node in the graph
+    """
+    def __init__(self, name, edges, weight):
+        self.name, self.edges, self.weight = name, edges, weight
         self.visited = False
 
     def choose_path(self):
@@ -20,13 +23,16 @@ class Node:
 
 
 class Edge:
+    """
+    Edge in the graph
+    """
     def __init__(self, n1, n2, length):
         self.node1, self.node2 = n1, n2
         self.length = length
         self.min_ph = 10
         self.max_ph = 1000
         self.pheromone = self.min_ph
-        self.evaporation = 0.94
+        self.evaporation = 0.97
 
     def get_way(self):
         if self.node1.visited and self.node2.visited:
@@ -44,10 +50,13 @@ class Edge:
 
 
 class Graph:
+    """
+    The graph itself
+    """
     def __init__(self, root, nodes, edges):
         self.nodes = []
         for n in nodes:
-            self.nodes.append(Node(n, []))
+            self.nodes.append(Node(n, [], 1))   # The weight 1 is fixed in this line
         self.edges = []
         for e in edges:
             n1 = self.find_node(e[0])
@@ -72,8 +81,18 @@ class Graph:
                     return e
         return None
 
+    def calculate_len(self, path):
+        l = 0
+        for i in range(len(path) - 1):
+            n1, n2 = path[i], path[i+1]
+            l += self.find_edge(n1, n2).length
+        return l
+
 
 class Vehicle:
+    """
+    "ant" to move around on the graph
+    """
     def __init__(self, capacity, max_range, position, name):
         self.name = name
         self.capacity, self.max_range = capacity, max_range
@@ -86,8 +105,14 @@ class Vehicle:
     def reset(self):
         self.load, self.fuel = self.capacity, self.max_range
         self.position = self.path[0]
+        self.edge_driven = 0
+        self.path = [self.path[0]]
+        self.path_ended = False
 
     def move(self):
+        """
+        Function that does all the job of moving along the edges, choosing new directions and putting the pheromone
+        """
         if self.path_ended:
             return None
         if self.fuel == 0:
@@ -103,7 +128,7 @@ class Vehicle:
                 return None
         elif isinstance(self.position, Edge):
             if self.edge_driven == self.position.length:
-                self.position.put_pheromone(500)
+                self.position.put_pheromone(150)
                 nn = self.position.get_way()
                 if nn and nn.weight <= self.load:
                     self.position = nn
@@ -134,6 +159,8 @@ class Colony:
                         finished = False
                 if finished:
                     return None
+            for vehicle in self.vehicles:
+                vehicle.reset()
 
     def step(self):
         for vehicle in self.vehicles:
