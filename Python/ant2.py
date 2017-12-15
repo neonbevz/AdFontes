@@ -24,9 +24,9 @@ class Edge:
         self.node1, self.node2 = n1, n2
         self.length = length
         self.min_ph = 10
-        self.max_ph = 100
+        self.max_ph = 1000
         self.pheromone = self.min_ph
-        self.evaporation = 0.95
+        self.evaporation = 0.94
 
     def get_way(self):
         if self.node1.visited and self.node2.visited:
@@ -103,7 +103,7 @@ class Vehicle:
                 return None
         elif isinstance(self.position, Edge):
             if self.edge_driven == self.position.length:
-                self.position.put_pheromone(40)
+                self.position.put_pheromone(500)
                 nn = self.position.get_way()
                 if nn and nn.weight <= self.load:
                     self.position = nn
