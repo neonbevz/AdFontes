@@ -1,4 +1,4 @@
-from ant2 import *
+from old_ant import *
 from graph_data import *
 
 
@@ -13,7 +13,7 @@ write_graph("100-graph.json", origin, nodes, edges)
 
 g = Graph(origin, nodes, edges)
 
-clny = Colony(5, 60, 600, g)
+clny = Colony(10, 60, 600, g)
 clny.iterate(1)
 
 # for edge in clny.graph.edges:

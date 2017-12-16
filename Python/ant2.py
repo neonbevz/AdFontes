@@ -102,9 +102,9 @@ class Vehicle:
         self.path_ended = False
         self.edge_driven = 0
 
-    def reset(self):
+    def reset(self, position):
         self.load, self.fuel = self.capacity, self.max_range
-        self.position = self.path[0]
+        self.position = position
         self.edge_driven = 0
         self.path = [self.path[0]]
         self.path_ended = False
@@ -120,9 +120,12 @@ class Vehicle:
             return None
         if isinstance(self.position, Node):
             try:
+
                 new_p = self.position.choose_path()
+
                 self.position = new_p[0]
                 self.edge_driven = 1
+
             except EndOfPath:
                 self.path_ended = True
                 return None
@@ -158,9 +161,9 @@ class Colony:
                     if not v.path_ended:
                         finished = False
                 if finished:
-                    return None
+                    break
             for vehicle in self.vehicles:
-                vehicle.reset()
+                vehicle.reset(self.graph.find_node("O"))
 
     def step(self):
         for vehicle in self.vehicles:
