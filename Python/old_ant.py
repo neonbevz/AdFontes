@@ -24,7 +24,7 @@ class Edge:
         self.node1, self.node2 = n1, n2
         self.length = length
         self.min_ph = 10
-        self.max_ph = 100
+        self.max_ph = 1000
         self.pheromone = self.min_ph
         self.evaporation = 0.95
 
@@ -90,9 +90,12 @@ class Vehicle:
         self.path_ended = False
         self.edge_driven = 0
 
-    def reset(self):
+    def reset(self, pos):
         self.load, self.fuel = self.capacity, self.max_range
-        self.position = self.path[0]
+        self.position = pos
+        self.path = [pos.name]
+        self.edge_driven = 0
+        self.path_ended = False
 
     def move(self):
         if self.path_ended:
@@ -110,7 +113,7 @@ class Vehicle:
                 return None
         elif isinstance(self.position, Edge):
             if self.edge_driven == self.position.length:
-                self.position.put_pheromone(40)
+                self.position.put_pheromone(900)
                 nn = self.position.get_way()
                 if nn and nn.weight <= self.load:
                     self.position = nn
@@ -142,8 +145,7 @@ class Colony:
                 if finished:
                     return None
             for vehicle in self.vehicles:
-                vehicle.reset()
-
+                vehicle.reset(self.graph.find_node("O"))
 
     def step(self):
         for vehicle in self.vehicles:

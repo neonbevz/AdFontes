@@ -16,19 +16,25 @@ g = Graph(origin, nodes, edges)
 clny = Colony(10, 60, 600, g)
 clny.iterate(1)
 
-# for edge in clny.graph.edges:
-#     print("Edge " + edge.node1.name + "-" + edge.node2.name + ": " + str(edge.pheromone))
 for vehicle in clny.vehicles:
     print(vehicle.path)
     print(g.calculate_len(vehicle.path))
 print("\n")
+
 clny.iterate(10)
-# for edge in clny.graph.edges:
-#     print("Edge " + edge.node1.name + "-" + edge.node2.name + ": " + str(edge.pheromone))
+
 for vehicle in clny.vehicles:
     print(vehicle.path)
     print(g.calculate_len(vehicle.path))
+
+o = clny.graph.find_node("O")
+for e in o.edges:
+    print(e.node1.name, e.node2.name, e.pheromone)
+for _ in range(5):
+    print(o.choose_path()[1].name)
+
 clny.iterate(100)
+
 print("\n")
 for vehicle in clny.vehicles:
     print(vehicle.path)

@@ -1,4 +1,4 @@
-from exceptions import *
+from Python.exceptions import *
 import random
 
 
