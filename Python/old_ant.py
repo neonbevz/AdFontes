@@ -26,7 +26,7 @@ class Edge:
         self.min_ph = 10
         self.max_ph = 1000
         self.pheromone = self.min_ph
-        self.evaporation = 0.95
+        self.evaporation = 0.98
 
     def get_way(self):
         if self.node1.visited and self.node2.visited:
@@ -113,7 +113,7 @@ class Vehicle:
                 return None
         elif isinstance(self.position, Edge):
             if self.edge_driven == self.position.length:
-                self.position.put_pheromone(900)
+                self.position.put_pheromone(10)
                 nn = self.position.get_way()
                 if nn and nn.weight <= self.load:
                     self.position = nn
@@ -132,7 +132,10 @@ class Colony:
     def __init__(self, v_number, v_capacity, v_range, graph):
         self.vehicles_number, self.vehicle_capacity, self.vehicle_range = v_number, v_capacity, v_range
         self.graph = graph
-        self.vehicles = [Vehicle(v_number, v_capacity, graph.nodes[0], str(i + 1)) for i in range(v_number)]
+        self.vehicles = self.gen_vehicles(v_number, v_capacity)
+
+    def gen_vehicles(self, v_number, v_capacity):
+        return [Vehicle(v_number, v_capacity, self.graph.nodes[0], str(i + 1)) for i in range(v_number)]
 
     def iterate(self, num):
         for i in range(num):
@@ -144,8 +147,9 @@ class Colony:
                         finished = False
                 if finished:
                     return None
-            for vehicle in self.vehicles:
-                vehicle.reset(self.graph.find_node("O"))
+            self.vehicles = self.gen_vehicles(len(self.vehicles), self.vehicles[0].capacity)
+            for n in self.graph.nodes:
+                n.visited = False
 
     def step(self):
         for vehicle in self.vehicles:

@@ -33,9 +33,15 @@ for e in o.edges:
 for _ in range(5):
     print(o.choose_path()[1].name)
 
-clny.iterate(100)
+clny.iterate(100000)
 
 print("\n")
 for vehicle in clny.vehicles:
     print(vehicle.path)
     print(g.calculate_len(vehicle.path))
+
+o = clny.graph.find_node("O")
+for e in o.edges:
+    print(e.node1.name, e.node2.name, e.pheromone)
+for _ in range(5):
+    print(o.choose_path()[1].name)

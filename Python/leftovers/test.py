@@ -10,7 +10,7 @@ print(results.count("N2"))
 print(results.count("N3"))
 print("\n")
 e = n.edges[0]
-e.put_pheromone(50)
+e.put_pheromone(300)
 results = []
 for i in range(1000):
     results.append(n.choose_path()[1].name)
